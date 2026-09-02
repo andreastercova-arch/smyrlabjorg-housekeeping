@@ -1,421 +1,614 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smyrlabjorg Housekeeping</title>
 
-    <title>Smyrlabjorg Housekeeping</title>
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+    body {
+        margin: 0;
+        background: #f4f5f7;
+        color: #202124;
+        font-family: Arial, Helvetica, sans-serif;
+    }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            color: #222;
-        }
+    header {
+        background: #ffffff;
+        padding: 12px 18px 10px;
+        border-bottom: 1px solid #ddd;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .date {
+        font-size: 12px;
+        color: #777;
+        margin-top: 3px;
+    }
+
+    button {
+        border: none;
+        background: #eeeeee;
+        padding: 7px 11px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    button:hover {
+        background: #dddddd;
+    }
+
+    .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 9px;
+        font-size: 12px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .red {
+        background: #e53935;
+    }
+
+    .green {
+        background: #43a047;
+    }
+
+    .purple {
+        background: #8e44ad;
+    }
+
+    .main {
+        padding: 12px;
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .section {
+        background: white;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        padding: 9px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .section-title {
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 7px;
+        letter-spacing: .2px;
+    }
+
+    .rooms {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(62px, 1fr));
+        gap: 5px;
+    }
+
+    .room {
+        min-height: 54px;
+        border: 1px solid #ddd;
+        border-radius: 7px;
+        background: #fafafa;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+        transition: .12s;
+        user-select: none;
+    }
+
+    .room:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(0,0,0,.12);
+    }
+
+    .room-number {
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .status {
+        font-size: 9px;
+        margin-top: 3px;
+        font-weight: 600;
+    }
+
+    .status-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        margin-top: 4px;
+    }
+
+    /* STATUS COLORS */
+
+    .room.occupied {
+        border-color: #e53935;
+        background: #fff5f5;
+    }
+
+    .room.occupied .status-dot {
+        background: #e53935;
+    }
+
+    .room.checkout {
+        border-color: #43a047;
+        background: #f3fff4;
+    }
+
+    .room.checkout .status-dot {
+        background: #43a047;
+    }
+
+    .room.stayover {
+        border-color: #8e44ad;
+        background: #fbf4ff;
+    }
+
+    .room.stayover .status-dot {
+        background: #8e44ad;
+    }
+
+    .room.done {
+        border-color: #777;
+        background: #eeeeee;
+    }
+
+    .room.done .status-dot {
+        background: #333;
+    }
+
+    .room.done .status {
+        color: #333;
+    }
+
+    .room.empty .status {
+        color: #aaa;
+    }
+
+    .summary {
+        margin-top: 10px;
+        background: white;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,.07);
+    }
+
+    @media (max-width: 600px) {
 
         header {
-            background: #ffffff;
-            padding: 20px;
-            border-bottom: 1px solid #ddd;
+            padding: 10px;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 26px;
+        h1 {
+            font-size: 17px;
         }
 
-        header p {
-            margin: 6px 0 0;
-            color: #777;
+        .legend {
+            gap: 8px;
+            font-size: 11px;
         }
 
-        .container {
-            max-width: 1000px;
-            margin: auto;
-            padding: 20px;
+        .main {
+            padding: 7px;
         }
 
-        .filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
+        .section {
+            padding: 7px;
+            margin-bottom: 7px;
         }
 
-        .filter {
-            border: none;
-            padding: 11px 16px;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-            font-size: 15px;
-            border: 1px solid #ddd;
-        }
-
-        .filter:hover {
-            background: #eeeeee;
-        }
-
-        .filter.active {
-            background: #222;
-            color: white;
+        .rooms {
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
         }
 
         .room {
-            background: white;
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 7px rgba(0,0,0,0.06);
-        }
-
-        .room-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
+            min-height: 48px;
         }
 
         .room-number {
-            font-size: 21px;
-            font-weight: bold;
+            font-size: 13px;
         }
 
         .status {
-            padding: 7px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
+            font-size: 8px;
         }
-
-        .ready {
-            background: #d9f7df;
-            color: #18752d;
-        }
-
-        .waiting {
-            background: #fff0c7;
-            color: #8a6500;
-        }
-
-        .cleaning {
-            background: #dcecff;
-            color: #185a9d;
-        }
-
-        .clean {
-            background: #e5e5e5;
-            color: #555;
-        }
-
-        .room-info {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 14px;
-            color: #555;
-            font-size: 14px;
-        }
-
-        .note {
-            margin-top: 12px;
-            padding: 10px;
-            background: #f5f5f5;
-            border-radius: 7px;
-            font-size: 14px;
-        }
-
-        .room-actions {
-            margin-top: 15px;
-        }
-
-        select {
-            padding: 9px;
-            border-radius: 7px;
-            border: 1px solid #ccc;
-            background: white;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 40px;
-            color: #777;
-        }
-    </style>
+    }
+</style>
 </head>
 
 <body>
 
 <header>
-    <h1>🏨 Housekeeping</h1>
-    <p>Room status for today</p>
+
+    <div class="top">
+        <div>
+            <h1>Smyrlabjorg Housekeeping</h1>
+            <div class="date" id="today"></div>
+        </div>
+
+        <button onclick="resetAll()">Reset all</button>
+    </div>
+
+    <div class="legend">
+
+        <div class="legend-item">
+            <span class="dot red"></span>
+            Occupied
+        </div>
+
+        <div class="legend-item">
+            <span class="dot green"></span>
+            Check out
+        </div>
+
+        <div class="legend-item">
+            <span class="dot purple"></span>
+            Stayover
+        </div>
+
+        <div class="legend-item">
+            ✓ Hotovo
+        </div>
+
+    </div>
+
 </header>
 
-<div class="container">
 
-    <div class="filters">
-        <button class="filter active" onclick="showRooms('all', this)">
-            All rooms
-        </button>
-
-        <button class="filter" onclick="showRooms('ready', this)">
-            🟢 Ready
-        </button>
-
-        <button class="filter" onclick="showRooms('waiting', this)">
-            🟡 Waiting
-        </button>
-
-        <button class="filter" onclick="showRooms('cleaning', this)">
-            🔵 Cleaning
-        </button>
-
-        <button class="filter" onclick="showRooms('clean', this)">
-            ✅ Clean
-        </button>
-    </div>
-
-
-    <div id="rooms">
-
-
-        <!-- ROOM 101 -->
-
-        <div class="room" data-status="ready">
-
-            <div class="room-top">
-                <div class="room-number">
-                    Room 101
-                </div>
-
-                <div class="status ready">
-                    🟢 READY TO CLEAN
-                </div>
-            </div>
-
-            <div class="room-info">
-                <span>🛏️ Checkout</span>
-                <span>👤 2 guests</span>
-            </div>
-
-            <div class="note">
-                No special information
-            </div>
-
-            <div class="room-actions">
-                <select onchange="changeStatus(this)">
-                    <option value="ready">Ready to clean</option>
-                    <option value="waiting">Waiting</option>
-                    <option value="cleaning">Cleaning</option>
-                    <option value="clean">Clean</option>
-                </select>
-            </div>
-
-        </div>
-
-
-        <!-- ROOM 102 -->
-
-        <div class="room" data-status="waiting">
-
-            <div class="room-top">
-                <div class="room-number">
-                    Room 102
-                </div>
-
-                <div class="status waiting">
-                    🟡 WAITING
-                </div>
-            </div>
-
-            <div class="room-info">
-                <span>🛏️ Checkout</span>
-                <span>👤 2 guests</span>
-            </div>
-
-            <div class="note">
-                Guest still in the room
-            </div>
-
-            <div class="room-actions">
-                <select onchange="changeStatus(this)">
-                    <option value="waiting">Waiting</option>
-                    <option value="ready">Ready to clean</option>
-                    <option value="cleaning">Cleaning</option>
-                    <option value="clean">Clean</option>
-                </select>
-            </div>
-
-        </div>
-
-
-        <!-- ROOM 103 -->
-
-        <div class="room" data-status="ready">
-
-            <div class="room-top">
-                <div class="room-number">
-                    Room 103
-                </div>
-
-                <div class="status ready">
-                    🟢 READY TO CLEAN
-                </div>
-            </div>
-
-            <div class="room-info">
-                <span>🛏️ Stayover</span>
-                <span>👤 1 guest</span>
-            </div>
-
-            <div class="note">
-                Extra towels
-            </div>
-
-            <div class="room-actions">
-                <select onchange="changeStatus(this)">
-                    <option value="ready">Ready to clean</option>
-                    <option value="waiting">Waiting</option>
-                    <option value="cleaning">Cleaning</option>
-                    <option value="clean">Clean</option>
-                </select>
-            </div>
-
-        </div>
-
-
-        <!-- ROOM 104 -->
-
-        <div class="room" data-status="cleaning">
-
-            <div class="room-top">
-                <div class="room-number">
-                    Room 104
-                </div>
-
-                <div class="status cleaning">
-                    🔵 CLEANING
-                </div>
-            </div>
-
-            <div class="room-info">
-                <span>🛏️ Checkout</span>
-                <span>👤 3 guests</span>
-            </div>
-
-            <div class="note">
-                —
-            </div>
-
-            <div class="room-actions">
-                <select onchange="changeStatus(this)">
-                    <option value="cleaning">Cleaning</option>
-                    <option value="ready">Ready to clean</option>
-                    <option value="waiting">Waiting</option>
-                    <option value="clean">Clean</option>
-                </select>
-            </div>
-
-        </div>
-
-
-        <!-- ROOM 105 -->
-
-        <div class="room" data-status="clean">
-
-            <div class="room-top">
-                <div class="room-number">
-                    Room 105
-                </div>
-
-                <div class="status clean">
-                    ✅ CLEAN
-                </div>
-            </div>
-
-            <div class="room-info">
-                <span>🛏️ Checkout</span>
-                <span>👤 2 guests</span>
-            </div>
-
-            <div class="note">
-                Ready for inspection
-            </div>
-
-            <div class="room-actions">
-                <select onchange="changeStatus(this)">
-                    <option value="clean">Clean</option>
-                    <option value="ready">Ready to clean</option>
-                    <option value="waiting">Waiting</option>
-                    <option value="cleaning">Cleaning</option>
-                </select>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
+<div class="main" id="app"></div>
 
 
 <script>
 
-function showRooms(status, button) {
+const sections = [
 
-    const rooms = document.querySelectorAll(".room");
+    {
+        name: "LUXURY 1–8",
+        rooms: [1,2,3,4,5,6,7,8]
+    },
 
-    document.querySelectorAll(".filter").forEach(function(btn) {
-        btn.classList.remove("active");
-    });
+    {
+        name: "CORRIDOR 1",
+        rooms: [101,102,103,104,105,106,107,108,109,110]
+    },
 
-    button.classList.add("active");
+    {
+        name: "CORRIDOR 2",
+        rooms: [111,112,113,114,115,116,117,118,119,120]
+    },
 
-    rooms.forEach(function(room) {
+    {
+        name: "CORRIDOR 3",
+        rooms: [121,122,123,124,125,126,127,128,129,130,131,132]
+    },
 
-        if (status === "all" || room.dataset.status === status) {
-            room.style.display = "block";
-        } else {
-            room.style.display = "none";
-        }
+    {
+        name: "CORRIDOR 4",
+        rooms: [133,134,135,136,137,138,139,140,141,142,143,144,145,146]
+    },
 
-    });
+    {
+        name: "CORRIDOR 5",
+        rooms: [147,148,149,150,151,152,153,154,155,156,157,158,159,160]
+    }
+
+];
+
+
+const statusNames = {
+    empty: "",
+    occupied: "Occupied",
+    checkout: "Check out",
+    stayover: "Stayover",
+    done: "✓ Hotovo"
+};
+
+
+function loadStates() {
+
+    try {
+        return JSON.parse(localStorage.getItem("housekeepingStates")) || {};
+    }
+
+    catch {
+        return {};
+    }
+
 }
 
 
-function changeStatus(select) {
-
-    const room = select.closest(".room");
-
-    const newStatus = select.value;
-
-    room.dataset.status = newStatus;
-
-    const statusElement = room.querySelector(".status");
-
-    statusElement.className = "status " + newStatus;
+let states = loadStates();
 
 
-    if (newStatus === "ready") {
-        statusElement.innerHTML = "🟢 READY TO CLEAN";
-    }
+function saveStates() {
 
-    if (newStatus === "waiting") {
-        statusElement.innerHTML = "🟡 WAITING";
-    }
+    localStorage.setItem(
+        "housekeepingStates",
+        JSON.stringify(states)
+    );
 
-    if (newStatus === "cleaning") {
-        statusElement.innerHTML = "🔵 CLEANING";
-    }
-
-    if (newStatus === "clean") {
-        statusElement.innerHTML = "✅ CLEAN";
-    }
 }
+
+
+function nextStatus(current) {
+
+    const order = [
+        "empty",
+        "occupied",
+        "checkout",
+        "stayover",
+        "done"
+    ];
+
+    const index = order.indexOf(current);
+
+    return order[(index + 1) % order.length];
+
+}
+
+
+function setStatus(room) {
+
+    const current = states[room] || "empty";
+
+    states[room] = nextStatus(current);
+
+    saveStates();
+
+    render();
+
+}
+
+
+function resetAll() {
+
+    if (
+        confirm(
+            "Reset all rooms for a new day?"
+        )
+    ) {
+
+        states = {};
+
+        saveStates();
+
+        render();
+
+    }
+
+}
+
+
+function render() {
+
+    const app = document.getElementById("app");
+
+    app.innerHTML = "";
+
+    sections.forEach(section => {
+
+        const sectionElement =
+            document.createElement("div");
+
+        sectionElement.className = "section";
+
+
+        const title =
+            document.createElement("div");
+
+        title.className = "section-title";
+
+        title.textContent = section.name;
+
+
+        const rooms =
+            document.createElement("div");
+
+        rooms.className = "rooms";
+
+
+        section.rooms.forEach(room => {
+
+            const state =
+                states[room] || "empty";
+
+
+            const roomElement =
+                document.createElement("div");
+
+            roomElement.className =
+                "room " + state;
+
+
+            roomElement.onclick = () =>
+                setStatus(room);
+
+
+            const number =
+                document.createElement("div");
+
+            number.className =
+                "room-number";
+
+            number.textContent = room;
+
+
+            const dot =
+                document.createElement("div");
+
+            dot.className =
+                "status-dot";
+
+
+            const status =
+                document.createElement("div");
+
+            status.className =
+                "status";
+
+            status.textContent =
+                statusNames[state];
+
+
+            roomElement.appendChild(number);
+
+            if (state !== "empty") {
+                roomElement.appendChild(dot);
+            }
+
+            roomElement.appendChild(status);
+
+            rooms.appendChild(roomElement);
+
+        });
+
+
+        sectionElement.appendChild(title);
+
+        sectionElement.appendChild(rooms);
+
+        app.appendChild(sectionElement);
+
+    });
+
+
+    updateSummary();
+
+}
+
+
+function updateSummary() {
+
+    let total = 0;
+    let done = 0;
+    let checkout = 0;
+    let stayover = 0;
+    let occupied = 0;
+
+
+    sections.forEach(section => {
+
+        section.rooms.forEach(room => {
+
+            total++;
+
+            const state =
+                states[room] || "empty";
+
+
+            if (state === "done")
+                done++;
+
+            if (state === "checkout")
+                checkout++;
+
+            if (state === "stayover")
+                stayover++;
+
+            if (state === "occupied")
+                occupied++;
+
+        });
+
+    });
+
+
+    const old =
+        document.querySelector(".summary");
+
+    if (old)
+        old.remove();
+
+
+    const summary =
+        document.createElement("div");
+
+    summary.className =
+        "summary";
+
+
+    summary.innerHTML =
+        `<strong>${done}</strong> hotovo
+        &nbsp;•&nbsp;
+        <strong>${checkout}</strong> check out
+        &nbsp;•&nbsp;
+        <strong>${stayover}</strong> stayover
+        &nbsp;•&nbsp;
+        <strong>${occupied}</strong> occupied
+        &nbsp;•&nbsp;
+        <strong>${total}</strong> pokojů celkem`;
+
+
+    document
+        .getElementById("app")
+        .appendChild(summary);
+
+}
+
+
+function showDate() {
+
+    const now = new Date();
+
+    const options = {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    };
+
+    document.getElementById("today")
+        .textContent =
+        now.toLocaleDateString(
+            "en-GB",
+            options
+        );
+
+}
+
+
+showDate();
+
+render();
 
 </script>
 
