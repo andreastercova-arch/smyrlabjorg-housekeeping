@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,18 +8,24 @@
 <title>Housekeeping</title>
 
 <style>
+
 * {
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
+  padding: 0;
   font-family: Arial, Helvetica, sans-serif;
   background: #f4f5f7;
   color: #222;
 }
 
-/* HEADER */
+/* =====================================================
+   HEADER
+   ===================================================== */
+
 header {
   position: sticky;
   top: 0;
@@ -71,14 +78,20 @@ button {
   color: #444;
 }
 
-/* MAIN */
+/* =====================================================
+   MAIN
+   ===================================================== */
+
 .main {
   max-width: 1200px;
   margin: auto;
   padding: 12px;
 }
 
-/* SUMMARY */
+/* =====================================================
+   SUMMARY
+   ===================================================== */
+
 .summary {
   background: white;
   border-radius: 10px;
@@ -95,7 +108,10 @@ button {
   white-space: nowrap;
 }
 
-/* SECTIONS */
+/* =====================================================
+   SECTIONS
+   ===================================================== */
+
 .section {
   background: white;
   border-radius: 10px;
@@ -110,7 +126,10 @@ button {
   margin-bottom: 8px;
 }
 
-/* ROOMS */
+/* =====================================================
+   ROOMS
+   ===================================================== */
+
 .rooms {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
@@ -120,14 +139,19 @@ button {
 .room {
   min-height: 54px;
   border-radius: 8px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   font-weight: bold;
   font-size: 13px;
+
   cursor: pointer;
   user-select: none;
+
   position: relative;
+
   transition: transform 0.08s ease;
 }
 
@@ -135,7 +159,10 @@ button {
   transform: scale(0.96);
 }
 
-/* STATUS COLORS */
+/* =====================================================
+   STATUS COLORS
+   ===================================================== */
+
 .room.empty {
   background: #f0f1f3;
   color: #555;
@@ -161,17 +188,23 @@ button {
   color: #176b25;
 }
 
-/* LEGEND */
+/* =====================================================
+   LEGEND
+   ===================================================== */
+
 .legend {
   background: white;
   border-radius: 10px;
   padding: 10px 12px;
   margin-top: 4px;
   margin-bottom: 15px;
+
   box-shadow: 0 2px 7px rgba(0,0,0,0.05);
+
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+
   font-size: 12px;
 }
 
@@ -205,76 +238,87 @@ button {
 }
 
 /* =====================================================
-   GLOBAL DROPDOWN MENU
+   GLOBAL DROPDOWN
    ===================================================== */
 
-.global-menu {
-  position: fixed;
+#globalMenu {
 
-  /* THIS IS THE IMPORTANT PART */
-  z-index: 2147483647;
+  position: fixed !important;
 
   display: none;
 
-  background: white;
-  border-radius: 9px;
-  padding: 5px;
+  z-index: 2147483647 !important;
 
-  box-shadow:
-    0 8px 25px rgba(0,0,0,0.22),
-    0 2px 8px rgba(0,0,0,0.15);
+  background: white;
+
+  border: 1px solid #d5d5d5;
+
+  border-radius: 9px;
+
+  padding: 5px;
 
   min-width: 145px;
 
-  border: 1px solid #ddd;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.25),
+    0 3px 10px rgba(0,0,0,0.18);
 
-  max-height: calc(100vh - 10px);
   overflow-y: auto;
+
+  isolation: isolate;
 }
 
-/* little options */
-.global-menu button {
+#globalMenu button {
+
   display: block;
+
   width: 100%;
+
   text-align: left;
 
   background: white;
+
   color: #222;
 
   padding: 9px 10px;
+
   margin: 0;
 
   font-size: 13px;
+
   font-weight: normal;
 
   border-radius: 6px;
 }
 
-.global-menu button:hover {
+#globalMenu button:hover {
   background: #f1f1f1;
 }
 
-.global-menu .menu-occupied {
+#globalMenu .menu-occupied {
   color: #a00000;
 }
 
-.global-menu .menu-checkout {
+#globalMenu .menu-checkout {
   color: #176b25;
 }
 
-.global-menu .menu-stayover {
+#globalMenu .menu-stayover {
   color: #5b2492;
 }
 
-.global-menu .menu-done {
+#globalMenu .menu-done {
   color: #176b25;
 }
 
-.global-menu .menu-empty {
+#globalMenu .menu-empty {
   color: #555;
 }
 
-/* MOBILE */
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
 @media (max-width: 600px) {
 
   header {
@@ -310,9 +354,12 @@ button {
   .legend {
     gap: 8px;
   }
+
 }
+
 </style>
 </head>
+
 
 <body>
 
@@ -326,6 +373,7 @@ button {
     </div>
 
     <div class="header-buttons">
+
       <button class="occupied-all" onclick="occupiedAll()">
         🔴 Occupied all
       </button>
@@ -333,6 +381,7 @@ button {
       <button class="reset" onclick="resetAll()">
         Reset all
       </button>
+
     </div>
 
   </div>
@@ -373,18 +422,47 @@ button {
 </div>
 
 
-<!-- =====================================================
-     GLOBAL MENU
-
-     IMPORTANT:
-     This is directly inside BODY, NOT inside a room.
-     Therefore it can appear above the entire page.
-     ===================================================== -->
-
-<div id="globalMenu" class="global-menu"></div>
+<div id="globalMenu"></div>
 
 
 <script>
+
+/* =====================================================
+   SUPABASE CONNECTION
+   ===================================================== */
+
+const SUPABASE_URL =
+  "https://nbkjwzmuzobldqthcyrf.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_900mEBPBsNw_gfp0iBv-hg_R7r366_z";
+
+
+/*
+   We load the Supabase JavaScript library
+   directly from the official CDN.
+*/
+
+const script =
+  document.createElement("script");
+
+script.src =
+  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+
+script.onload = function() {
+
+  window.supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+  startApp();
+
+};
+
+document.head.appendChild(script);
+
 
 /* =====================================================
    ROOMS
@@ -426,50 +504,195 @@ const sections = [
 
 
 /* =====================================================
-   STATUS NAMES
+   STATE
    ===================================================== */
 
-const statusNames = {
-
-  empty: "",
-
-  occupied: "Occupied",
-
-  checkout: "Check out",
-
-  stayover: "Stayover",
-
-  done: "✓ Hotovo"
-
-};
-
-
-/* =====================================================
-   SAVED STATE
-   ===================================================== */
-
-let states =
-  JSON.parse(localStorage.getItem("housekeepingStates")) || {};
-
-
-/* =====================================================
-   CURRENT MENU
-   ===================================================== */
+let states = {};
 
 let currentMenuRoom = null;
+
 let currentMenuRoomElement = null;
 
 
 /* =====================================================
-   SAVE
+   START
    ===================================================== */
 
-function save() {
+async function startApp() {
 
-  localStorage.setItem(
-    "housekeepingStates",
-    JSON.stringify(states)
-  );
+  await loadRooms();
+
+  render();
+
+  setupRealtime();
+
+}
+
+
+/* =====================================================
+   LOAD ROOMS FROM SUPABASE
+   ===================================================== */
+
+async function loadRooms() {
+
+  const {
+    data,
+    error
+  } =
+    await window.supabaseClient
+      .from("rooms")
+      .select("room_number,status");
+
+
+  if (error) {
+
+    console.error(
+      "Supabase error:",
+      error
+    );
+
+    alert(
+      "Could not connect to the database."
+    );
+
+    return;
+
+  }
+
+
+  states = {};
+
+
+  data.forEach(room => {
+
+    if (
+      room.status &&
+      room.status !== "empty"
+    ) {
+
+      states[
+        room.room_number
+      ] = room.status;
+
+    }
+
+  });
+
+}
+
+
+/* =====================================================
+   UPDATE ONE ROOM
+   ===================================================== */
+
+async function updateRoom(
+  room,
+  status
+) {
+
+  const {
+    error
+  } =
+    await window.supabaseClient
+      .from("rooms")
+      .update({
+        status: status,
+        updated_at: new Date().toISOString()
+      })
+      .eq(
+        "room_number",
+        room
+      );
+
+
+  if (error) {
+
+    console.error(
+      "Update error:",
+      error
+    );
+
+    alert(
+      "Could not save the room status."
+    );
+
+    return false;
+
+  }
+
+
+  return true;
+
+}
+
+
+/* =====================================================
+   REALTIME
+   ===================================================== */
+
+function setupRealtime() {
+
+  window.supabaseClient
+    .channel("rooms-live")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "rooms"
+      },
+      function(payload) {
+
+        console.log(
+          "Realtime update:",
+          payload
+        );
+
+
+        /*
+          Update local state
+          immediately.
+        */
+
+        if (
+          payload.eventType ===
+          "DELETE"
+        ) {
+
+          delete states[
+            payload.old.room_number
+          ];
+
+        } else {
+
+          const room =
+            payload.new.room_number;
+
+          const status =
+            payload.new.status;
+
+
+          if (
+            status === "empty"
+          ) {
+
+            delete states[room];
+
+          } else {
+
+            states[room] =
+              status;
+
+          }
+
+        }
+
+
+        render();
+
+      }
+    )
+    .subscribe();
 
 }
 
@@ -480,65 +703,93 @@ function save() {
 
 function render() {
 
-  const app = document.getElementById("app");
+  const app =
+    document.getElementById("app");
 
   app.innerHTML = "";
 
-  sections.forEach(section => {
 
-    const sectionDiv = document.createElement("div");
+  sections.forEach(
+    section => {
 
-    sectionDiv.className = "section";
+      const sectionDiv =
+        document.createElement("div");
 
-
-    const title = document.createElement("div");
-
-    title.className = "section-title";
-
-    title.textContent = section.name;
+      sectionDiv.className =
+        "section";
 
 
-    const roomsDiv = document.createElement("div");
+      const title =
+        document.createElement("div");
 
-    roomsDiv.className = "rooms";
+      title.className =
+        "section-title";
 
-
-    section.rooms.forEach(room => {
-
-      const roomDiv = document.createElement("div");
-
-      roomDiv.className =
-        "room " + (states[room] || "empty");
-
-      roomDiv.textContent = room;
+      title.textContent =
+        section.name;
 
 
-      /*
-       First click:
-       ONLY opens menu.
-      */
+      const roomsDiv =
+        document.createElement("div");
 
-      roomDiv.addEventListener("click", function(event) {
-
-        event.stopPropagation();
-
-        openMenu(room, roomDiv);
-
-      });
+      roomsDiv.className =
+        "rooms";
 
 
-      roomsDiv.appendChild(roomDiv);
+      section.rooms.forEach(
+        room => {
 
-    });
+          const roomDiv =
+            document.createElement("div");
 
 
-    sectionDiv.appendChild(title);
+          roomDiv.className =
+            "room " +
+            (states[room] ||
+            "empty");
 
-    sectionDiv.appendChild(roomsDiv);
 
-    app.appendChild(sectionDiv);
+          roomDiv.textContent =
+            room;
 
-  });
+
+          roomDiv.addEventListener(
+            "click",
+            function(event) {
+
+              event.stopPropagation();
+
+              openMenu(
+                room,
+                roomDiv
+              );
+
+            }
+          );
+
+
+          roomsDiv.appendChild(
+            roomDiv
+          );
+
+        }
+      );
+
+
+      sectionDiv.appendChild(
+        title
+      );
+
+      sectionDiv.appendChild(
+        roomsDiv
+      );
+
+      app.appendChild(
+        sectionDiv
+      );
+
+    }
+  );
 
 
   updateSummary();
@@ -547,66 +798,96 @@ function render() {
 
 
 /* =====================================================
-   OPEN GLOBAL MENU
+   OPEN MENU
    ===================================================== */
 
-function openMenu(room, roomElement) {
+function openMenu(
+  room,
+  roomElement
+) {
 
-  closeMenu();
+  currentMenuRoom =
+    room;
+
+  currentMenuRoomElement =
+    roomElement;
 
 
-  currentMenuRoom = room;
+  const menu =
+    document.getElementById(
+      "globalMenu"
+    );
 
-  currentMenuRoomElement = roomElement;
 
+  if (
+    menu.parentElement !==
+    document.body
+  ) {
 
-  const menu = document.getElementById("globalMenu");
+    document.body.appendChild(
+      menu
+    );
+
+  }
 
 
   menu.innerHTML = `
 
-    <button class="menu-occupied"
-      onclick="selectStatus('occupied', event)">
+    <button
+      class="menu-occupied"
+      onclick="
+        selectStatus('occupied', event)
+      ">
       🔴 Occupied
     </button>
 
-    <button class="menu-checkout"
-      onclick="selectStatus('checkout', event)">
+    <button
+      class="menu-checkout"
+      onclick="
+        selectStatus('checkout', event)
+      ">
       🟢 Check out
     </button>
 
-    <button class="menu-stayover"
-      onclick="selectStatus('stayover', event)">
+    <button
+      class="menu-stayover"
+      onclick="
+        selectStatus('stayover', event)
+      ">
       🟣 Stayover
     </button>
 
-    <button class="menu-done"
-      onclick="selectStatus('done', event)">
+    <button
+      class="menu-done"
+      onclick="
+        selectStatus('done', event)
+      ">
       ✅ Hotovo
     </button>
 
-    <button class="menu-empty"
-      onclick="selectStatus('empty', event)">
+    <button
+      class="menu-empty"
+      onclick="
+        selectStatus('empty', event)
+      ">
       ◻ Empty
     </button>
 
   `;
 
 
-  /*
-    Show menu temporarily so we can
-    measure its real width.
-  */
+  menu.style.display =
+    "block";
 
-  menu.style.display = "block";
-
-  menu.style.visibility = "hidden";
+  menu.style.visibility =
+    "hidden";
 
 
   positionMenu();
 
 
-  menu.style.visibility = "visible";
+  menu.style.visibility =
+    "visible";
 
 }
 
@@ -617,24 +898,32 @@ function openMenu(room, roomElement) {
 
 function positionMenu() {
 
-  if (!currentMenuRoomElement) return;
+  if (
+    !currentMenuRoomElement
+  ) {
+
+    return;
+
+  }
 
 
   const menu =
-    document.getElementById("globalMenu");
+    document.getElementById(
+      "globalMenu"
+    );
 
 
   const room =
-    currentMenuRoomElement.getBoundingClientRect();
+    currentMenuRoomElement
+      .getBoundingClientRect();
 
 
   const menuWidth =
     menu.offsetWidth;
 
+  const menuHeight =
+    menu.offsetHeight;
 
-  /*
-    Center menu underneath room.
-  */
 
   let left =
     room.left +
@@ -642,60 +931,73 @@ function positionMenu() {
     (menuWidth / 2);
 
 
-  /*
-    Don't let menu go outside
-    left/right side of screen.
-  */
-
-  left = Math.max(
-    5,
-    Math.min(
-      left,
-      window.innerWidth - menuWidth - 5
-    )
-  );
+  left =
+    Math.max(
+      5,
+      Math.min(
+        left,
+        window.innerWidth -
+        menuWidth -
+        5
+      )
+    );
 
 
-  /*
-    ALWAYS DOWN.
+  const spaceBelow =
+    window.innerHeight -
+    room.bottom -
+    8;
 
-    We intentionally do NOT flip
-    the menu upwards.
-  */
 
-  const top =
-    room.bottom + 6;
+  const spaceAbove =
+    room.top -
+    8;
+
+
+  let top;
+
+
+  if (
+    spaceBelow >= menuHeight ||
+    spaceBelow >= spaceAbove
+  ) {
+
+    top =
+      room.bottom + 6;
+
+  } else {
+
+    top =
+      room.top -
+      menuHeight -
+      6;
+
+  }
+
+
+  top =
+    Math.max(
+      5,
+      Math.min(
+        top,
+        window.innerHeight -
+        menuHeight -
+        5
+      )
+    );
 
 
   menu.style.left =
     left + "px";
 
-
   menu.style.top =
     top + "px";
 
-
-  /*
-    If there isn't enough space below,
-    allow the menu itself to scroll.
-    It still opens DOWN.
-  */
-
-  const availableHeight =
-    window.innerHeight - top - 10;
-
-
-  if (availableHeight > 80) {
-
-    menu.style.maxHeight =
-      availableHeight + "px";
-
-  } else {
-
-    menu.style.maxHeight =
-      "80px";
-
-  }
+  menu.style.maxHeight =
+    Math.max(
+      80,
+      window.innerHeight - 10
+    ) + "px";
 
 }
 
@@ -704,7 +1006,10 @@ function positionMenu() {
    SELECT STATUS
    ===================================================== */
 
-function selectStatus(status, event) {
+async function selectStatus(
+  status,
+  event
+) {
 
   if (event) {
 
@@ -713,26 +1018,52 @@ function selectStatus(status, event) {
   }
 
 
-  if (currentMenuRoom !== null) {
+  if (
+    currentMenuRoom === null
+  ) {
 
-    if (status === "empty") {
-
-      delete states[currentMenuRoom];
-
-    } else {
-
-      states[currentMenuRoom] = status;
-
-    }
-
-    save();
+    return;
 
   }
 
 
+  const room =
+    currentMenuRoom;
+
+
   closeMenu();
 
+
+  /*
+    Optimistic update:
+    change screen immediately.
+  */
+
+  if (
+    status === "empty"
+  ) {
+
+    delete states[room];
+
+  } else {
+
+    states[room] =
+      status;
+
+  }
+
+
   render();
+
+
+  /*
+    Save to Supabase.
+  */
+
+  await updateRoom(
+    room,
+    status
+  );
 
 }
 
@@ -744,18 +1075,23 @@ function selectStatus(status, event) {
 function closeMenu() {
 
   const menu =
-    document.getElementById("globalMenu");
+    document.getElementById(
+      "globalMenu"
+    );
 
 
-  menu.style.display = "none";
+  menu.style.display =
+    "none";
+
+  menu.style.visibility =
+    "hidden";
 
 
-  menu.style.visibility = "hidden";
+  currentMenuRoom =
+    null;
 
-
-  currentMenuRoom = null;
-
-  currentMenuRoomElement = null;
+  currentMenuRoomElement =
+    null;
 
 }
 
@@ -764,35 +1100,41 @@ function closeMenu() {
    CLICK OUTSIDE
    ===================================================== */
 
-document.addEventListener("click", function(event) {
+document.addEventListener(
+  "click",
+  function(event) {
 
-  const menu =
-    document.getElementById("globalMenu");
+    const menu =
+      document.getElementById(
+        "globalMenu"
+      );
 
 
-  /*
-    If click isn't inside menu,
-    close it.
-  */
+    if (
+      !menu.contains(
+        event.target
+      )
+    ) {
 
-  if (!menu.contains(event.target)) {
+      closeMenu();
 
-    closeMenu();
+    }
 
   }
-
-});
+);
 
 
 /* =====================================================
-   KEEP MENU ATTACHED TO ROOM
+   KEEP MENU ATTACHED
    ===================================================== */
 
 window.addEventListener(
   "scroll",
   function() {
 
-    if (currentMenuRoom !== null) {
+    if (
+      currentMenuRoom !== null
+    ) {
 
       positionMenu();
 
@@ -807,7 +1149,9 @@ window.addEventListener(
   "resize",
   function() {
 
-    if (currentMenuRoom !== null) {
+    if (
+      currentMenuRoom !== null
+    ) {
 
       positionMenu();
 
@@ -821,7 +1165,7 @@ window.addEventListener(
    OCCUPIED ALL
    ===================================================== */
 
-function occupiedAll() {
+async function occupiedAll() {
 
   const confirmed =
     confirm(
@@ -830,23 +1174,49 @@ function occupiedAll() {
     );
 
 
-  if (!confirmed) return;
+  if (!confirmed) {
+
+    return;
+
+  }
 
 
-  sections.forEach(section => {
-
-    section.rooms.forEach(room => {
-
-      states[room] = "occupied";
-
-    });
-
-  });
+  const allRooms = [];
 
 
-  save();
+  sections.forEach(
+    section => {
+
+      section.rooms.forEach(
+        room => {
+
+          allRooms.push(
+            room
+          );
+
+          states[room] =
+            "occupied";
+
+        }
+      );
+
+    }
+  );
+
 
   render();
+
+
+  for (
+    const room of allRooms
+  ) {
+
+    await updateRoom(
+      room,
+      "occupied"
+    );
+
+  }
 
 }
 
@@ -855,7 +1225,7 @@ function occupiedAll() {
    RESET ALL
    ===================================================== */
 
-function resetAll() {
+async function resetAll() {
 
   const confirmed =
     confirm(
@@ -864,14 +1234,59 @@ function resetAll() {
     );
 
 
-  if (!confirmed) return;
+  if (!confirmed) {
+
+    return;
+
+  }
 
 
-  states = {};
+  sections.forEach(
+    section => {
 
-  save();
+      section.rooms.forEach(
+        room => {
+
+          delete states[room];
+
+        }
+      );
+
+    }
+  );
+
 
   render();
+
+
+  const {
+    error
+  } =
+    await window.supabaseClient
+      .from("rooms")
+      .update({
+        status: "empty",
+        updated_at:
+          new Date().toISOString()
+      })
+      .neq(
+        "room_number",
+        0
+      );
+
+
+  if (error) {
+
+    console.error(
+      "Reset error:",
+      error
+    );
+
+    alert(
+      "Could not reset the rooms."
+    );
+
+  }
 
 }
 
@@ -893,45 +1308,84 @@ function updateSummary() {
   let occupied = 0;
 
 
-  sections.forEach(section => {
+  sections.forEach(
+    section => {
 
-    section.rooms.forEach(room => {
+      section.rooms.forEach(
+        room => {
 
-      total++;
-
-
-      if (states[room] === "done") {
-        done++;
-      }
-
-      if (states[room] === "checkout") {
-        checkout++;
-      }
-
-      if (states[room] === "stayover") {
-        stayover++;
-      }
-
-      if (states[room] === "occupied") {
-        occupied++;
-      }
-
-    });
-
-  });
+          total++;
 
 
-  document.getElementById("summary").innerHTML = `
+          if (
+            states[room] ===
+            "done"
+          ) {
 
-    <span><strong>${total}</strong> rooms</span>
+            done++;
 
-    <span>🔴 ${occupied}</span>
+          }
 
-    <span>🟢 ${checkout}</span>
 
-    <span>🟣 ${stayover}</span>
+          if (
+            states[room] ===
+            "checkout"
+          ) {
 
-    <span>✅ ${done}</span>
+            checkout++;
+
+          }
+
+
+          if (
+            states[room] ===
+            "stayover"
+          ) {
+
+            stayover++;
+
+          }
+
+
+          if (
+            states[room] ===
+            "occupied"
+          ) {
+
+            occupied++;
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+
+  document.getElementById(
+    "summary"
+  ).innerHTML = `
+
+    <span>
+      <strong>${total}</strong> rooms
+    </span>
+
+    <span>
+      🔴 ${occupied}
+    </span>
+
+    <span>
+      🟢 ${checkout}
+    </span>
+
+    <span>
+      🟣 ${stayover}
+    </span>
+
+    <span>
+      ✅ ${done}
+    </span>
 
   `;
 
@@ -942,7 +1396,9 @@ function updateSummary() {
    DATE
    ===================================================== */
 
-document.getElementById("date").textContent =
+document.getElementById(
+  "date"
+).textContent =
   new Date().toLocaleDateString(
     "en-GB",
     {
@@ -953,14 +1409,8 @@ document.getElementById("date").textContent =
     }
   );
 
-
-/* =====================================================
-   START
-   ===================================================== */
-
-render();
-
 </script>
 
 </body>
 </html>
+```
