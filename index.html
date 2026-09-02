@@ -1,349 +1,316 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smyrlabjorg Housekeeping</title>
+
+<title>Housekeeping</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    body {
-        margin: 0;
-        background: #f4f5f7;
-        color: #202124;
-        font-family: Arial, Helvetica, sans-serif;
-    }
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f5f7;
+  color: #222;
+}
 
-    header {
-        background: #ffffff;
-        padding: 12px 18px 10px;
-        border-bottom: 1px solid #ddd;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
+/* HEADER */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: white;
+  padding: 12px 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
 
-    .top {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 10px;
-    }
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
 
-    h1 {
-        margin: 0;
-        font-size: 20px;
-        font-weight: 700;
-    }
+.title {
+  font-size: 22px;
+  font-weight: bold;
+}
 
-    .date {
-        font-size: 12px;
-        color: #777;
-        margin-top: 3px;
-    }
+.date {
+  font-size: 13px;
+  color: #777;
+  margin-top: 3px;
+}
 
-    .header-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        align-items: stretch;
-    }
+.header-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
 
-    button {
-        border: none;
-        background: #eeeeee;
-        padding: 7px 11px;
-        border-radius: 7px;
-        cursor: pointer;
-        font-size: 12px;
-        white-space: nowrap;
-    }
+button {
+  border: none;
+  border-radius: 7px;
+  padding: 7px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-    button:hover {
-        background: #dddddd;
-    }
+.occupied-all {
+  background: #ffe0e0;
+  color: #a00000;
+}
 
-    .occupied-all {
-        background: #ffeded;
-    }
+.reset {
+  background: #eeeeee;
+  color: #444;
+}
 
-    .occupied-all:hover {
-        background: #ffdede;
-    }
+/* MAIN */
+.main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 12px;
+}
 
-    .legend {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 9px;
-        font-size: 12px;
-    }
+/* SUMMARY */
+.summary {
+  background: white;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.05);
+  font-size: 13px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
 
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
+.summary span {
+  white-space: nowrap;
+}
 
-    .dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        display: inline-block;
-    }
+/* SECTIONS */
+.section {
+  background: white;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  padding: 10px;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.05);
+}
 
-    .red {
-        background: #e53935;
-    }
+.section-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
 
-    .green {
-        background: #43a047;
-    }
+/* ROOMS */
+.rooms {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+  gap: 6px;
+}
 
-    .purple {
-        background: #8e44ad;
-    }
+.room {
+  min-height: 54px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: transform 0.08s ease;
+}
 
-    .main {
-        padding: 12px;
-        max-width: 1200px;
-        margin: auto;
-    }
+.room:active {
+  transform: scale(0.96);
+}
 
-    .section {
-        background: white;
-        border-radius: 10px;
-        margin-bottom: 10px;
-        padding: 9px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        position: relative;
-    }
+/* STATUS COLORS */
+.room.empty {
+  background: #f0f1f3;
+  color: #555;
+}
 
-    .section-title {
-        font-size: 13px;
-        font-weight: 700;
-        margin-bottom: 7px;
-        letter-spacing: .2px;
-    }
+.room.occupied {
+  background: #ffd7d7;
+  color: #a00000;
+}
 
-    .rooms {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(62px, 1fr));
-        gap: 5px;
-    }
+.room.checkout {
+  background: #d8f5dc;
+  color: #176b25;
+}
 
-    .room {
-        min-height: 54px;
-        border: 1px solid #ddd;
-        border-radius: 7px;
-        background: #fafafa;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        position: relative;
-        transition: .12s;
-        user-select: none;
-    }
+.room.stayover {
+  background: #eadcff;
+  color: #5b2492;
+}
 
-    .room:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 2px 5px rgba(0,0,0,.12);
-    }
+.room.done {
+  background: #c9f3d0;
+  color: #176b25;
+}
 
-    .room-number {
-        font-size: 14px;
-        font-weight: 700;
-    }
+/* LEGEND */
+.legend {
+  background: white;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 4px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.05);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+}
 
-    .status {
-        font-size: 9px;
-        margin-top: 3px;
-        font-weight: 600;
-    }
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 
-    .status-dot {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-        margin-top: 4px;
-    }
+.legend-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  display: inline-block;
+}
 
-    /* STATUS COLORS */
+.dot-occupied {
+  background: #ffd7d7;
+}
 
-    .room.occupied {
-        border-color: #e53935;
-        background: #fff5f5;
-    }
+.dot-checkout {
+  background: #d8f5dc;
+}
 
-    .room.occupied .status-dot {
-        background: #e53935;
-    }
+.dot-stayover {
+  background: #eadcff;
+}
 
-    .room.checkout {
-        border-color: #43a047;
-        background: #f3fff4;
-    }
+.dot-done {
+  background: #c9f3d0;
+}
 
-    .room.checkout .status-dot {
-        background: #43a047;
-    }
+/* =====================================================
+   GLOBAL DROPDOWN MENU
+   ===================================================== */
 
-    .room.stayover {
-        border-color: #8e44ad;
-        background: #fbf4ff;
-    }
+.global-menu {
+  position: fixed;
 
-    .room.stayover .status-dot {
-        background: #8e44ad;
-    }
+  /* THIS IS THE IMPORTANT PART */
+  z-index: 2147483647;
 
-    .room.done {
-        border-color: #777;
-        background: #eeeeee;
-    }
+  display: none;
 
-    .room.done .status-dot {
-        background: #333;
-    }
+  background: white;
+  border-radius: 9px;
+  padding: 5px;
 
-    .room.done .status {
-        color: #333;
-    }
+  box-shadow:
+    0 8px 25px rgba(0,0,0,0.22),
+    0 2px 8px rgba(0,0,0,0.15);
 
-    .room.empty .status {
-        color: #aaa;
-    }
+  min-width: 145px;
 
-    /* POPUP MENU */
+  border: 1px solid #ddd;
 
-    .room-menu {
-        position: absolute;
-        top: calc(100% + 5px);
-        left: 50%;
-        transform: translateX(-50%);
+  max-height: calc(100vh - 10px);
+  overflow-y: auto;
+}
 
-        background: white;
-        border: 1px solid #ccc;
-        border-radius: 9px;
-        padding: 5px;
+/* little options */
+.global-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
 
-        box-shadow: 0 6px 20px rgba(0,0,0,.22);
+  background: white;
+  color: #222;
 
-        min-width: 120px;
+  padding: 9px 10px;
+  margin: 0;
 
-        display: none;
+  font-size: 13px;
+  font-weight: normal;
 
-        /*
-        Very high layer:
-        the menu appears ABOVE other rooms
-        */
-        z-index: 99999;
-    }
+  border-radius: 6px;
+}
 
-    .room-menu.open {
-        display: block;
-    }
+.global-menu button:hover {
+  background: #f1f1f1;
+}
 
-    .menu-option {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        padding: 7px 8px;
-        border-radius: 6px;
-        font-size: 11px;
-        white-space: nowrap;
-        cursor: pointer;
-        position: relative;
-        z-index: 100000;
-    }
+.global-menu .menu-occupied {
+  color: #a00000;
+}
 
-    .menu-option:hover {
-        background: #f1f1f1;
-    }
+.global-menu .menu-checkout {
+  color: #176b25;
+}
 
-    .menu-dot {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-        flex-shrink: 0;
-    }
+.global-menu .menu-stayover {
+  color: #5b2492;
+}
 
-    .menu-cancel {
-        border-top: 1px solid #eee;
-        margin-top: 3px;
-        padding-top: 7px;
-        color: #777;
-    }
+.global-menu .menu-done {
+  color: #176b25;
+}
 
-    .summary {
-        margin-top: 10px;
-        background: white;
-        padding: 9px 12px;
-        border-radius: 8px;
-        font-size: 12px;
-        box-shadow: 0 1px 3px rgba(0,0,0,.07);
-    }
+.global-menu .menu-empty {
+  color: #555;
+}
 
-    @media (max-width: 600px) {
+/* MOBILE */
+@media (max-width: 600px) {
 
-        header {
-            padding: 10px;
-        }
+  header {
+    padding: 10px;
+  }
 
-        h1 {
-            font-size: 17px;
-        }
+  .title {
+    font-size: 19px;
+  }
 
-        .legend {
-            gap: 8px;
-            font-size: 11px;
-        }
+  .main {
+    padding: 8px;
+  }
 
-        .main {
-            padding: 7px;
-        }
+  .section {
+    padding: 8px;
+  }
 
-        .section {
-            padding: 7px;
-            margin-bottom: 7px;
-        }
+  .rooms {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+  }
 
-        .rooms {
-            grid-template-columns: repeat(5, 1fr);
-            gap: 4px;
-        }
+  .room {
+    min-height: 48px;
+    font-size: 12px;
+  }
 
-        .room {
-            min-height: 48px;
-        }
+  .summary {
+    gap: 8px;
+  }
 
-        .room-number {
-            font-size: 13px;
-        }
-
-        .status {
-            font-size: 8px;
-        }
-
-        .room-menu {
-            min-width: 120px;
-        }
-
-        .header-buttons {
-            gap: 4px;
-        }
-
-        button {
-            font-size: 11px;
-            padding: 6px 8px;
-        }
-    }
+  .legend {
+    gap: 8px;
+  }
+}
 </style>
 </head>
 
@@ -351,679 +318,645 @@
 
 <header>
 
-    <div class="top">
+  <div class="header-top">
 
-        <div>
-            <h1>Smyrlabjorg Housekeeping</h1>
-            <div class="date" id="today"></div>
-        </div>
-
-        <div class="header-buttons">
-
-            <button
-                class="occupied-all"
-                onclick="occupiedAll()">
-                🔴 Occupied all
-            </button>
-
-            <button
-                onclick="resetAll()">
-                Reset all
-            </button>
-
-        </div>
-
+    <div>
+      <div class="title">Housekeeping</div>
+      <div class="date" id="date"></div>
     </div>
 
-    <div class="legend">
+    <div class="header-buttons">
+      <button class="occupied-all" onclick="occupiedAll()">
+        🔴 Occupied all
+      </button>
 
-        <div class="legend-item">
-            <span class="dot red"></span>
-            Occupied
-        </div>
-
-        <div class="legend-item">
-            <span class="dot green"></span>
-            Check out
-        </div>
-
-        <div class="legend-item">
-            <span class="dot purple"></span>
-            Stayover
-        </div>
-
-        <div class="legend-item">
-            ✓ Hotovo
-        </div>
-
+      <button class="reset" onclick="resetAll()">
+        Reset all
+      </button>
     </div>
+
+  </div>
 
 </header>
 
 
-<div class="main" id="app"></div>
+<div class="main">
+
+  <div class="summary" id="summary"></div>
+
+  <div id="app"></div>
+
+  <div class="legend">
+
+    <div class="legend-item">
+      <span class="legend-dot dot-occupied"></span>
+      🔴 Occupied
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-dot dot-checkout"></span>
+      🟢 Check out
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-dot dot-stayover"></span>
+      🟣 Stayover
+    </div>
+
+    <div class="legend-item">
+      <span class="legend-dot dot-done"></span>
+      ✅ Hotovo
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     GLOBAL MENU
+
+     IMPORTANT:
+     This is directly inside BODY, NOT inside a room.
+     Therefore it can appear above the entire page.
+     ===================================================== -->
+
+<div id="globalMenu" class="global-menu"></div>
 
 
 <script>
 
+/* =====================================================
+   ROOMS
+   ===================================================== */
+
 const sections = [
 
-    {
-        name: "LUXURY 1–8",
-        rooms: [1,2,3,4,5,6,7,8]
-    },
+  {
+    name: "LUXURY 1–8",
+    rooms: [1,2,3,4,5,6,7,8]
+  },
 
-    {
-        name: "CORRIDOR 1",
-        rooms: [101,102,103,104,105,106,107,108,109,110]
-    },
+  {
+    name: "CORRIDOR 1",
+    rooms: [101,102,103,104,105,106,107,108,109,110]
+  },
 
-    {
-        name: "CORRIDOR 2",
-        rooms: [111,112,113,114,115,116,117,118,119,120]
-    },
+  {
+    name: "CORRIDOR 2",
+    rooms: [111,112,113,114,115,116,117,118,119,120]
+  },
 
-    {
-        name: "CORRIDOR 3",
-        rooms: [121,122,123,124,125,126,127,128,129,130,131,132]
-    },
+  {
+    name: "CORRIDOR 3",
+    rooms: [121,122,123,124,125,126,127,128,129,130,131,132]
+  },
 
-    {
-        name: "CORRIDOR 4",
-        rooms: [133,134,135,136,137,138,139,140,141,142,143,144,145,146]
-    },
+  {
+    name: "CORRIDOR 4",
+    rooms: [133,134,135,136,137,138,139,140,141,142,143,144,145,146]
+  },
 
-    {
-        name: "CORRIDOR 5",
-        rooms: [147,148,149,150,151,152,153,154,155,156,157,158,159,160]
-    }
+  {
+    name: "CORRIDOR 5",
+    rooms: [147,148,149,150,151,152,153,154,155,156,157,158,159,160]
+  }
 
 ];
 
 
+/* =====================================================
+   STATUS NAMES
+   ===================================================== */
+
 const statusNames = {
 
-    empty: "",
+  empty: "",
 
-    occupied: "Occupied",
+  occupied: "Occupied",
 
-    checkout: "Check out",
+  checkout: "Check out",
 
-    stayover: "Stayover",
+  stayover: "Stayover",
 
-    done: "✓ Hotovo"
+  done: "✓ Hotovo"
 
 };
 
 
-let states = loadStates();
+/* =====================================================
+   SAVED STATE
+   ===================================================== */
+
+let states =
+  JSON.parse(localStorage.getItem("housekeepingStates")) || {};
 
 
-function loadStates() {
+/* =====================================================
+   CURRENT MENU
+   ===================================================== */
 
-    try {
-
-        return JSON.parse(
-            localStorage.getItem("housekeepingStates")
-        ) || {};
-
-    }
-
-    catch {
-
-        return {};
-
-    }
-
-}
+let currentMenuRoom = null;
+let currentMenuRoomElement = null;
 
 
-function saveStates() {
+/* =====================================================
+   SAVE
+   ===================================================== */
 
-    localStorage.setItem(
-        "housekeepingStates",
-        JSON.stringify(states)
-    );
+function save() {
+
+  localStorage.setItem(
+    "housekeepingStates",
+    JSON.stringify(states)
+  );
 
 }
 
 
-/* OPEN MENU */
-
-function openMenu(room, event) {
-
-    event.stopPropagation();
-
-    closeAllMenus();
-
-    const menu =
-        document.getElementById(
-            "menu-" + room
-        );
-
-    if (menu) {
-
-        menu.classList.add("open");
-
-    }
-
-}
-
-
-/* CLOSE MENUS */
-
-function closeAllMenus() {
-
-    document
-        .querySelectorAll(".room-menu")
-        .forEach(menu => {
-
-            menu.classList.remove("open");
-
-        });
-
-}
-
-
-/* CHANGE STATUS */
-
-function setStatus(
-    room,
-    newStatus,
-    event
-) {
-
-    event.stopPropagation();
-
-    states[room] =
-        newStatus;
-
-    saveStates();
-
-    render();
-
-}
-
-
-/* OCCUPIED ALL */
-
-function occupiedAll() {
-
-    const confirmed =
-        confirm(
-            "Set ALL rooms to Occupied?\n\n" +
-            "This will change the status of every room."
-        );
-
-    if (!confirmed) {
-
-        return;
-
-    }
-
-
-    sections.forEach(section => {
-
-        section.rooms.forEach(room => {
-
-            states[room] =
-                "occupied";
-
-        });
-
-    });
-
-
-    saveStates();
-
-    render();
-
-}
-
-
-/* RESET ALL */
-
-function resetAll() {
-
-    const confirmed =
-        confirm(
-            "Reset ALL rooms for a new day?\n\n" +
-            "All room statuses will be cleared."
-        );
-
-    if (!confirmed) {
-
-        return;
-
-    }
-
-
-    states = {};
-
-    saveStates();
-
-    render();
-
-}
-
-
-/* RENDER */
+/* =====================================================
+   RENDER
+   ===================================================== */
 
 function render() {
 
-    const app =
-        document.getElementById("app");
+  const app = document.getElementById("app");
 
-    app.innerHTML = "";
+  app.innerHTML = "";
 
+  sections.forEach(section => {
 
-    sections.forEach(section => {
+    const sectionDiv = document.createElement("div");
 
-        const sectionElement =
-            document.createElement("div");
+    sectionDiv.className = "section";
 
-        sectionElement.className =
-            "section";
 
+    const title = document.createElement("div");
 
-        const title =
-            document.createElement("div");
+    title.className = "section-title";
 
-        title.className =
-            "section-title";
+    title.textContent = section.name;
 
-        title.textContent =
-            section.name;
 
+    const roomsDiv = document.createElement("div");
 
-        const rooms =
-            document.createElement("div");
+    roomsDiv.className = "rooms";
 
-        rooms.className =
-            "rooms";
 
+    section.rooms.forEach(room => {
 
-        section.rooms.forEach(room => {
+      const roomDiv = document.createElement("div");
 
-            const state =
-                states[room] ||
-                "empty";
+      roomDiv.className =
+        "room " + (states[room] || "empty");
 
+      roomDiv.textContent = room;
 
-            const roomElement =
-                document.createElement("div");
 
-            roomElement.className =
-                "room " + state;
+      /*
+       First click:
+       ONLY opens menu.
+      */
 
+      roomDiv.addEventListener("click", function(event) {
 
-            roomElement.onclick =
-                function(event) {
+        event.stopPropagation();
 
-                    openMenu(
-                        room,
-                        event
-                    );
+        openMenu(room, roomDiv);
 
-                };
+      });
 
 
-            /* ROOM NUMBER */
-
-            const number =
-                document.createElement("div");
-
-            number.className =
-                "room-number";
-
-            number.textContent =
-                room;
-
-            roomElement.appendChild(
-                number
-            );
-
-
-            /* STATUS DOT */
-
-            if (state !== "empty") {
-
-                const dot =
-                    document.createElement("div");
-
-                dot.className =
-                    "status-dot";
-
-                roomElement.appendChild(
-                    dot
-                );
-
-            }
-
-
-            /* CURRENT STATUS */
-
-            const status =
-                document.createElement("div");
-
-            status.className =
-                "status";
-
-            status.textContent =
-                statusNames[state];
-
-            roomElement.appendChild(
-                status
-            );
-
-
-            /* MENU */
-
-            const menu =
-                document.createElement("div");
-
-            menu.className =
-                "room-menu";
-
-            menu.id =
-                "menu-" + room;
-
-
-            /* OCCUPIED */
-
-            menu.appendChild(
-                createMenuOption(
-                    "Occupied",
-                    "#e53935",
-                    room,
-                    "occupied"
-                )
-            );
-
-
-            /* CHECK OUT */
-
-            menu.appendChild(
-                createMenuOption(
-                    "Check out",
-                    "#43a047",
-                    room,
-                    "checkout"
-                )
-            );
-
-
-            /* STAYOVER */
-
-            menu.appendChild(
-                createMenuOption(
-                    "Stayover",
-                    "#8e44ad",
-                    room,
-                    "stayover"
-                )
-            );
-
-
-            /* DONE */
-
-            menu.appendChild(
-                createMenuOption(
-                    "✓ Hotovo",
-                    "#333333",
-                    room,
-                    "done"
-                )
-            );
-
-
-            /* CANCEL */
-
-            const cancel =
-                document.createElement("div");
-
-            cancel.className =
-                "menu-option menu-cancel";
-
-            cancel.textContent =
-                "✕ Cancel";
-
-
-            cancel.onclick =
-                function(event) {
-
-                    event.stopPropagation();
-
-                    closeAllMenus();
-
-                };
-
-
-            menu.appendChild(
-                cancel
-            );
-
-
-            roomElement.appendChild(
-                menu
-            );
-
-            rooms.appendChild(
-                roomElement
-            );
-
-        });
-
-
-        sectionElement.appendChild(
-            title
-        );
-
-        sectionElement.appendChild(
-            rooms
-        );
-
-        app.appendChild(
-            sectionElement
-        );
+      roomsDiv.appendChild(roomDiv);
 
     });
 
 
-    updateSummary();
+    sectionDiv.appendChild(title);
+
+    sectionDiv.appendChild(roomsDiv);
+
+    app.appendChild(sectionDiv);
+
+  });
+
+
+  updateSummary();
 
 }
 
 
-/* CREATE MENU OPTION */
+/* =====================================================
+   OPEN GLOBAL MENU
+   ===================================================== */
 
-function createMenuOption(
-    text,
-    color,
-    room,
-    newStatus
-) {
+function openMenu(room, roomElement) {
 
-    const option =
-        document.createElement("div");
-
-    option.className =
-        "menu-option";
+  closeMenu();
 
 
-    const dot =
-        document.createElement("span");
+  currentMenuRoom = room;
 
-    dot.className =
-        "menu-dot";
-
-    dot.style.background =
-        color;
+  currentMenuRoomElement = roomElement;
 
 
-    const label =
-        document.createElement("span");
-
-    label.textContent =
-        text;
+  const menu = document.getElementById("globalMenu");
 
 
-    option.appendChild(
-        dot
-    );
+  menu.innerHTML = `
 
-    option.appendChild(
-        label
-    );
+    <button class="menu-occupied"
+      onclick="selectStatus('occupied', event)">
+      🔴 Occupied
+    </button>
 
+    <button class="menu-checkout"
+      onclick="selectStatus('checkout', event)">
+      🟢 Check out
+    </button>
 
-    option.onclick =
-        function(event) {
+    <button class="menu-stayover"
+      onclick="selectStatus('stayover', event)">
+      🟣 Stayover
+    </button>
 
-            setStatus(
-                room,
-                newStatus,
-                event
-            );
+    <button class="menu-done"
+      onclick="selectStatus('done', event)">
+      ✅ Hotovo
+    </button>
 
-        };
+    <button class="menu-empty"
+      onclick="selectStatus('empty', event)">
+      ◻ Empty
+    </button>
 
-
-    return option;
-
-}
-
-
-/* SUMMARY */
-
-function updateSummary() {
-
-    let total = 0;
-
-    let done = 0;
-
-    let checkout = 0;
-
-    let stayover = 0;
-
-    let occupied = 0;
+  `;
 
 
-    sections.forEach(section => {
+  /*
+    Show menu temporarily so we can
+    measure its real width.
+  */
 
-        section.rooms.forEach(room => {
+  menu.style.display = "block";
 
-            total++;
-
-
-            const state =
-                states[room] ||
-                "empty";
+  menu.style.visibility = "hidden";
 
 
-            if (state === "done")
-                done++;
+  positionMenu();
 
 
-            if (state === "checkout")
-                checkout++;
-
-
-            if (state === "stayover")
-                stayover++;
-
-
-            if (state === "occupied")
-                occupied++;
-
-        });
-
-    });
-
-
-    const old =
-        document.querySelector(
-            ".summary"
-        );
-
-    if (old)
-        old.remove();
-
-
-    const summary =
-        document.createElement("div");
-
-    summary.className =
-        "summary";
-
-
-    summary.innerHTML =
-
-        `<strong>${done}</strong> hotovo
-        &nbsp;•&nbsp;
-        <strong>${checkout}</strong> check out
-        &nbsp;•&nbsp;
-        <strong>${stayover}</strong> stayover
-        &nbsp;•&nbsp;
-        <strong>${occupied}</strong> occupied
-        &nbsp;•&nbsp;
-        <strong>${total}</strong> pokojů celkem`;
-
-
-    document
-        .getElementById("app")
-        .appendChild(
-            summary
-        );
+  menu.style.visibility = "visible";
 
 }
 
 
-/* CLICK OUTSIDE */
+/* =====================================================
+   POSITION MENU
+   ===================================================== */
 
-document.addEventListener(
-    "click",
-    function() {
+function positionMenu() {
 
-        closeAllMenus();
+  if (!currentMenuRoomElement) return;
+
+
+  const menu =
+    document.getElementById("globalMenu");
+
+
+  const room =
+    currentMenuRoomElement.getBoundingClientRect();
+
+
+  const menuWidth =
+    menu.offsetWidth;
+
+
+  /*
+    Center menu underneath room.
+  */
+
+  let left =
+    room.left +
+    (room.width / 2) -
+    (menuWidth / 2);
+
+
+  /*
+    Don't let menu go outside
+    left/right side of screen.
+  */
+
+  left = Math.max(
+    5,
+    Math.min(
+      left,
+      window.innerWidth - menuWidth - 5
+    )
+  );
+
+
+  /*
+    ALWAYS DOWN.
+
+    We intentionally do NOT flip
+    the menu upwards.
+  */
+
+  const top =
+    room.bottom + 6;
+
+
+  menu.style.left =
+    left + "px";
+
+
+  menu.style.top =
+    top + "px";
+
+
+  /*
+    If there isn't enough space below,
+    allow the menu itself to scroll.
+    It still opens DOWN.
+  */
+
+  const availableHeight =
+    window.innerHeight - top - 10;
+
+
+  if (availableHeight > 80) {
+
+    menu.style.maxHeight =
+      availableHeight + "px";
+
+  } else {
+
+    menu.style.maxHeight =
+      "80px";
+
+  }
+
+}
+
+
+/* =====================================================
+   SELECT STATUS
+   ===================================================== */
+
+function selectStatus(status, event) {
+
+  if (event) {
+
+    event.stopPropagation();
+
+  }
+
+
+  if (currentMenuRoom !== null) {
+
+    if (status === "empty") {
+
+      delete states[currentMenuRoom];
+
+    } else {
+
+      states[currentMenuRoom] = status;
 
     }
+
+    save();
+
+  }
+
+
+  closeMenu();
+
+  render();
+
+}
+
+
+/* =====================================================
+   CLOSE MENU
+   ===================================================== */
+
+function closeMenu() {
+
+  const menu =
+    document.getElementById("globalMenu");
+
+
+  menu.style.display = "none";
+
+
+  menu.style.visibility = "hidden";
+
+
+  currentMenuRoom = null;
+
+  currentMenuRoomElement = null;
+
+}
+
+
+/* =====================================================
+   CLICK OUTSIDE
+   ===================================================== */
+
+document.addEventListener("click", function(event) {
+
+  const menu =
+    document.getElementById("globalMenu");
+
+
+  /*
+    If click isn't inside menu,
+    close it.
+  */
+
+  if (!menu.contains(event.target)) {
+
+    closeMenu();
+
+  }
+
+});
+
+
+/* =====================================================
+   KEEP MENU ATTACHED TO ROOM
+   ===================================================== */
+
+window.addEventListener(
+  "scroll",
+  function() {
+
+    if (currentMenuRoom !== null) {
+
+      positionMenu();
+
+    }
+
+  },
+  true
 );
 
 
-/* DATE */
+window.addEventListener(
+  "resize",
+  function() {
 
-function showDate() {
+    if (currentMenuRoom !== null) {
 
-    const now =
-        new Date();
+      positionMenu();
 
+    }
 
-    const options = {
-
-        weekday: "long",
-
-        day: "numeric",
-
-        month: "long",
-
-        year: "numeric"
-
-    };
+  }
+);
 
 
-    document
-        .getElementById("today")
-        .textContent =
-        now.toLocaleDateString(
-            "en-GB",
-            options
-        );
+/* =====================================================
+   OCCUPIED ALL
+   ===================================================== */
+
+function occupiedAll() {
+
+  const confirmed =
+    confirm(
+      "Set ALL rooms to Occupied?\n\n" +
+      "This will change the status of every room."
+    );
+
+
+  if (!confirmed) return;
+
+
+  sections.forEach(section => {
+
+    section.rooms.forEach(room => {
+
+      states[room] = "occupied";
+
+    });
+
+  });
+
+
+  save();
+
+  render();
 
 }
 
 
-showDate();
+/* =====================================================
+   RESET ALL
+   ===================================================== */
+
+function resetAll() {
+
+  const confirmed =
+    confirm(
+      "Reset ALL room statuses?\n\n" +
+      "This cannot be undone."
+    );
+
+
+  if (!confirmed) return;
+
+
+  states = {};
+
+  save();
+
+  render();
+
+}
+
+
+/* =====================================================
+   SUMMARY
+   ===================================================== */
+
+function updateSummary() {
+
+  let total = 0;
+
+  let done = 0;
+
+  let checkout = 0;
+
+  let stayover = 0;
+
+  let occupied = 0;
+
+
+  sections.forEach(section => {
+
+    section.rooms.forEach(room => {
+
+      total++;
+
+
+      if (states[room] === "done") {
+        done++;
+      }
+
+      if (states[room] === "checkout") {
+        checkout++;
+      }
+
+      if (states[room] === "stayover") {
+        stayover++;
+      }
+
+      if (states[room] === "occupied") {
+        occupied++;
+      }
+
+    });
+
+  });
+
+
+  document.getElementById("summary").innerHTML = `
+
+    <span><strong>${total}</strong> rooms</span>
+
+    <span>🔴 ${occupied}</span>
+
+    <span>🟢 ${checkout}</span>
+
+    <span>🟣 ${stayover}</span>
+
+    <span>✅ ${done}</span>
+
+  `;
+
+}
+
+
+/* =====================================================
+   DATE
+   ===================================================== */
+
+document.getElementById("date").textContent =
+  new Date().toLocaleDateString(
+    "en-GB",
+    {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }
+  );
+
+
+/* =====================================================
+   START
+   ===================================================== */
 
 render();
 
@@ -1031,4 +964,3 @@ render();
 
 </body>
 </html>
-```
