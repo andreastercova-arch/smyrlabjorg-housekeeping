@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -202,6 +203,56 @@
         color: #aaa;
     }
 
+    /* POPUP MENU */
+
+    .room-menu {
+        position: absolute;
+        top: calc(100% + 5px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 9px;
+        padding: 5px;
+        box-shadow: 0 5px 18px rgba(0,0,0,.18);
+        z-index: 100;
+        min-width: 115px;
+        display: none;
+    }
+
+    .room-menu.open {
+        display: block;
+    }
+
+    .menu-option {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    .menu-option:hover {
+        background: #f1f1f1;
+    }
+
+    .menu-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .menu-cancel {
+        border-top: 1px solid #eee;
+        margin-top: 3px;
+        padding-top: 7px;
+        color: #777;
+    }
+
     .summary {
         margin-top: 10px;
         background: white;
@@ -251,6 +302,10 @@
         .status {
             font-size: 8px;
         }
+
+        .room-menu {
+            min-width: 120px;
+        }
     }
 </style>
 </head>
@@ -260,12 +315,14 @@
 <header>
 
     <div class="top">
+
         <div>
             <h1>Smyrlabjorg Housekeeping</h1>
             <div class="date" id="today"></div>
         </div>
 
         <button onclick="resetAll()">Reset all</button>
+
     </div>
 
     <div class="legend">
@@ -335,28 +392,40 @@ const sections = [
 
 
 const statusNames = {
+
     empty: "",
+
     occupied: "Occupied",
+
     checkout: "Check out",
+
     stayover: "Stayover",
+
     done: "✓ Hotovo"
+
 };
+
+
+let states = loadStates();
 
 
 function loadStates() {
 
     try {
-        return JSON.parse(localStorage.getItem("housekeepingStates")) || {};
+
+        return JSON.parse(
+            localStorage.getItem("housekeepingStates")
+        ) || {};
+
     }
 
     catch {
+
         return {};
+
     }
 
 }
-
-
-let states = loadStates();
 
 
 function saveStates() {
@@ -369,28 +438,50 @@ function saveStates() {
 }
 
 
-function nextStatus(current) {
+/* OPEN MENU */
 
-    const order = [
-        "empty",
-        "occupied",
-        "checkout",
-        "stayover",
-        "done"
-    ];
+function openMenu(room, event) {
 
-    const index = order.indexOf(current);
+    event.stopPropagation();
 
-    return order[(index + 1) % order.length];
+    closeAllMenus();
+
+    const menu =
+        document.getElementById(
+            "menu-" + room
+        );
+
+    if (menu) {
+
+        menu.classList.add("open");
+
+    }
 
 }
 
 
-function setStatus(room) {
+/* CLOSE ALL MENUS */
 
-    const current = states[room] || "empty";
+function closeAllMenus() {
 
-    states[room] = nextStatus(current);
+    document
+        .querySelectorAll(".room-menu")
+        .forEach(menu => {
+
+            menu.classList.remove("open");
+
+        });
+
+}
+
+
+/* CHANGE STATUS */
+
+function setStatus(room, newStatus, event) {
+
+    event.stopPropagation();
+
+    states[room] = newStatus;
 
     saveStates();
 
@@ -398,6 +489,8 @@ function setStatus(room) {
 
 }
 
+
+/* RESET */
 
 function resetAll() {
 
@@ -418,32 +511,40 @@ function resetAll() {
 }
 
 
+/* RENDER */
+
 function render() {
 
-    const app = document.getElementById("app");
+    const app =
+        document.getElementById("app");
 
     app.innerHTML = "";
+
 
     sections.forEach(section => {
 
         const sectionElement =
             document.createElement("div");
 
-        sectionElement.className = "section";
+        sectionElement.className =
+            "section";
 
 
         const title =
             document.createElement("div");
 
-        title.className = "section-title";
+        title.className =
+            "section-title";
 
-        title.textContent = section.name;
+        title.textContent =
+            section.name;
 
 
         const rooms =
             document.createElement("div");
 
-        rooms.className = "rooms";
+        rooms.className =
+            "rooms";
 
 
         section.rooms.forEach(room => {
@@ -458,10 +559,12 @@ function render() {
             roomElement.className =
                 "room " + state;
 
+            roomElement.onclick =
+                (event) =>
+                openMenu(room, event);
 
-            roomElement.onclick = () =>
-                setStatus(room);
 
+            /* ROOM NUMBER */
 
             const number =
                 document.createElement("div");
@@ -469,15 +572,29 @@ function render() {
             number.className =
                 "room-number";
 
-            number.textContent = room;
+            number.textContent =
+                room;
 
 
-            const dot =
-                document.createElement("div");
+            roomElement.appendChild(number);
 
-            dot.className =
-                "status-dot";
 
+            /* CURRENT STATUS DOT */
+
+            if (state !== "empty") {
+
+                const dot =
+                    document.createElement("div");
+
+                dot.className =
+                    "status-dot";
+
+                roomElement.appendChild(dot);
+
+            }
+
+
+            /* CURRENT STATUS */
 
             const status =
                 document.createElement("div");
@@ -488,14 +605,93 @@ function render() {
             status.textContent =
                 statusNames[state];
 
-
-            roomElement.appendChild(number);
-
-            if (state !== "empty") {
-                roomElement.appendChild(dot);
-            }
-
             roomElement.appendChild(status);
+
+
+            /* MENU */
+
+            const menu =
+                document.createElement("div");
+
+            menu.className =
+                "room-menu";
+
+            menu.id =
+                "menu-" + room;
+
+
+            /* OCCUPIED */
+
+            menu.appendChild(
+                createMenuOption(
+                    "Occupied",
+                    "#e53935",
+                    room,
+                    "occupied"
+                )
+            );
+
+
+            /* CHECK OUT */
+
+            menu.appendChild(
+                createMenuOption(
+                    "Check out",
+                    "#43a047",
+                    room,
+                    "checkout"
+                )
+            );
+
+
+            /* STAYOVER */
+
+            menu.appendChild(
+                createMenuOption(
+                    "Stayover",
+                    "#8e44ad",
+                    room,
+                    "stayover"
+                )
+            );
+
+
+            /* DONE */
+
+            menu.appendChild(
+                createMenuOption(
+                    "✓ Hotovo",
+                    "#333333",
+                    room,
+                    "done"
+                )
+            );
+
+
+            /* CANCEL */
+
+            const cancel =
+                document.createElement("div");
+
+            cancel.className =
+                "menu-option menu-cancel";
+
+            cancel.textContent =
+                "✕ Cancel";
+
+            cancel.onclick =
+                (event) => {
+
+                    event.stopPropagation();
+
+                    closeAllMenus();
+
+                };
+
+
+            menu.appendChild(cancel);
+
+            roomElement.appendChild(menu);
 
             rooms.appendChild(roomElement);
 
@@ -516,12 +712,70 @@ function render() {
 }
 
 
+/* CREATE MENU OPTION */
+
+function createMenuOption(
+    text,
+    color,
+    room,
+    newStatus
+) {
+
+    const option =
+        document.createElement("div");
+
+    option.className =
+        "menu-option";
+
+
+    const dot =
+        document.createElement("span");
+
+    dot.className =
+        "menu-dot";
+
+    dot.style.background =
+        color;
+
+
+    const label =
+        document.createElement("span");
+
+    label.textContent =
+        text;
+
+
+    option.appendChild(dot);
+
+    option.appendChild(label);
+
+
+    option.onclick =
+        (event) =>
+        setStatus(
+            room,
+            newStatus,
+            event
+        );
+
+
+    return option;
+
+}
+
+
+/* SUMMARY */
+
 function updateSummary() {
 
     let total = 0;
+
     let done = 0;
+
     let checkout = 0;
+
     let stayover = 0;
+
     let occupied = 0;
 
 
@@ -567,6 +821,7 @@ function updateSummary() {
 
 
     summary.innerHTML =
+
         `<strong>${done}</strong> hotovo
         &nbsp;•&nbsp;
         <strong>${checkout}</strong> check out
@@ -585,18 +840,41 @@ function updateSummary() {
 }
 
 
+/* CLOSE MENU WHEN CLICKING OUTSIDE */
+
+document.addEventListener(
+    "click",
+    function() {
+
+        closeAllMenus();
+
+    }
+);
+
+
+/* DATE */
+
 function showDate() {
 
-    const now = new Date();
+    const now =
+        new Date();
+
 
     const options = {
+
         weekday: "long",
+
         day: "numeric",
+
         month: "long",
+
         year: "numeric"
+
     };
 
-    document.getElementById("today")
+
+    document
+        .getElementById("today")
         .textContent =
         now.toLocaleDateString(
             "en-GB",
@@ -614,3 +892,4 @@ render();
 
 </body>
 </html>
+```
